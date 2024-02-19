@@ -46,14 +46,16 @@ function App() {
     <>
       <h1>Upload Image with Cloudinary - Demo</h1>
       <form onSubmit={handleSubmit}>
+      {/* probably other inputs */}
+
         <input type="file" onChange={(e) => handleFileUpload(e)} />
-        <br />
-        <br />
+
         <button type="submit" disabled={waitingForImageUrl}>
           Submit
         </button>
       </form>
 
+      {/* here you can see a preview of the image uploaded */}
       {imageUrl && <img src={imageUrl} alt="my cloudinary image" />}
     </>
   );
