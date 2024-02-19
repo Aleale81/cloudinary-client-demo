@@ -10,14 +10,21 @@ function App() {
   const handleFileUpload = (e) => {
     // disable the submit form button till we get the image url from Cloudinary
     setWaitingForImageUrl(true);
-   //check if we receive the file path correctly
-    console.log("The file to be uploaded is: ", e.target.files[0]); 
-    // store file in variable
-    const file = e.target.files[0]
 
-    // VITE_BACKEND_URL --> Netlify .app/.netlify/functions   add/ netlify function name file
+    //check if we receive the file path correctly
+    console.log("The file to be uploaded is: ", e.target.files[0]);
+
+    // create url where send the request including your personal Cloudinary Name
+    const url = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_NAME}/upload`;
+
+    const dataToUpload = new FormData();
+    // properties needs to have those specific names!!!
+    dataToUpload.append("file", e.target.files[0]);
+    // VITE_UNSIGN_UPLOAD => name of the unsigned upload preset created in your Cloudinary account
+    dataToUpload.append("upload_preset", import.meta.env.VITE_UNSIGN_UPLOAD);
+
     axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}/cloudinary-upload`, {file})
+      .post(url, dataToUpload)
       .then((response) => {
         // to see the structure of the response
         console.log('RESPONSE ', response.data); 
@@ -26,7 +33,7 @@ function App() {
         setWaitingForImageUrl(false);
       })
       .catch((error) => {
-        console.error("Error uploading the file:", error.message);
+        console.error("Error uploading the file:", error);
       });
   };
 
