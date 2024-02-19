@@ -14,21 +14,21 @@ function App() {
     //check if we receive the file path correctly
     console.log("The file to be uploaded is: ", e.target.files[0]);
 
-    // create url where send the request including your personal Cloudinary Name
+    // create url including your personal Cloudinary Name
     const url = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_NAME}/upload`;
 
     const dataToUpload = new FormData();
     // properties needs to have those specific names!!!
     dataToUpload.append("file", e.target.files[0]);
-    // VITE_UNSIGN_UPLOAD => name of the unsigned upload preset created in your Cloudinary account
-    dataToUpload.append("upload_preset", import.meta.env.VITE_UNSIGN_UPLOAD);
+    // VITE_UNSIGNED_UPLOAD_PRESET => name of the unsigned upload preset created in your Cloudinary account
+    dataToUpload.append("upload_preset", import.meta.env.VITE_UNSIGNED_UPLOAD_PRESET);
 
     axios
       .post(url, dataToUpload)
       .then((response) => {
         // to see the structure of the response
         console.log('RESPONSE ', response.data); 
-        // the url we wanna use is stored in the property secure_url
+        // the image url is stored in the property secure_url
         setImageUrl(response.data.secure_url); 
         setWaitingForImageUrl(false);
       })
@@ -39,17 +39,21 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // The image has been uploaded, now we can send the post request to DB including the imageUrl in the body of the req
+    // send the post request to DB including the imageUrl in the body of the req
+    // .....
   };
 
   return (
     <>
       <h1>Upload Image with Cloudinary - Demo</h1>
       <form onSubmit={handleSubmit}>
-      {/* probably other inputs */}
+      {/*  other inputs */}
 
         <input type="file" onChange={(e) => handleFileUpload(e)} />
 
+      {/* use the waitingForImageUrl variable to disable the Submit button 
+      in order to avoid to create a new resources before the image has been uploaded 
+      in Cloudinary and the response imageUrl has been received  */}
         <button type="submit" disabled={waitingForImageUrl}>
           Submit
         </button>
